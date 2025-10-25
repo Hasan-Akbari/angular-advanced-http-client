@@ -38,11 +38,26 @@ jobs:
       - name: SPA fallback (copy index.html to 404.html)
         id: spa
         run: |
-          DIST_DIR="dist/http-client/browser"
-          if [ ! -f "$DIST_DIR/index.html" ]; then
-            DIST_DIR="dist/http-client"
+          set -e
+          DIST_BASE="dist/http-client"
+          INDEX_FILE=""
+          if [ -f "$DIST_BASE/browser/index.html" ]; then
+            INDEX_FILE="$DIST_BASE/browser/index.html"
+          elif [ -f "$DIST_BASE/index.html" ]; then
+            INDEX_FILE="$DIST_BASE/index.html"
+          else
+            INDEX_FILE=$(find "$DIST_BASE" -maxdepth 4 -name "index.html" | head -n 1 || true)
           fi
-          cp -f "$DIST_DIR/index.html" "$DIST_DIR/404.html"
+
+          if [ -z "$INDEX_FILE" ]; then
+            echo "No index.html found under $DIST_BASE" >&2
+            echo "Tree of $DIST_BASE:"
+            ls -R "$DIST_BASE" || true
+            exit 1
+          fi
+
+          DIST_DIR="$(dirname "$INDEX_FILE")"
+          cp -f "$INDEX_FILE" "$DIST_DIR/404.html"
           echo "dist_dir=$DIST_DIR" >> $GITHUB_OUTPUT
 
       - name: Upload Pages artifact
