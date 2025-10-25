@@ -1,6 +1,6 @@
 {
   "name": "@hasan-akbari/advanced-http-client",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Advanced Angular HttpClient with cache, inflight dedup, rate limit, debounce, queueing, batching, retry/backoff, timeout, logging.",
   "keywords": [
     "angular",
