@@ -19,12 +19,12 @@
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hasan-akbari/advanced-http-client.git"
+    "url": "git+https://github.com/Hasan-Akbari/angular-advanced-http-client"
   },
   "bugs": {
-    "url": "https://github.com/hasan-akbari/advanced-http-client/issues"
+    "url": "https://github.com/Hasan-Akbari/angular-advanced-http-client/issues"
   },
-  "homepage": "https://github.com/hasan-akbari/advanced-http-client#readme",
+  "homepage": "https://github.com/Hasan-Akbari/angular-advanced-http-client#readme",
   "peerDependencies": {
     "@angular/common": "^17.3.0",
     "@angular/core": "^17.3.0",
