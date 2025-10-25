@@ -1,24 +1,29 @@
 # AdvancedHttpClient
 
-کتابخانه AdvancedHttpClient یک سرویس HTTP پیشرفته برای Angular است که علاوه بر قابلیت‌های استاندارد، مجموعه‌ای از ویژگی‌های عملیاتی سطح‌بالا را به‌صورت شفاف ارائه می‌کند:
+AdvancedHttpClient is a feature-rich HTTP service for Angular that augments the standard HttpClient with production-grade capabilities:
 
-- کش حافظه‌ای با انقضا
-- اشتراک نتیجه و جلوگیری از ارسال‌های هم‌زمان تکراری (inflight dedup)
-- محدودسازی نرخ (Rate Limit) و دیبانس (Debounce)
-- صف‌بندی درخواست‌ها (Sequential/Parallel) با کنترل هم‌زمانی و اولویت
-- بچینگ درخواست‌ها با ترکیب payload و توزیع پاسخ‌ها
-- Retry با backoff و fallback سفارشی
-- Timeout و لاگینگ با قابلیت ارسال لاگ به سرور
+- In-memory cache with expiration
+- Inflight de-duplication and result sharing
+- Rate limiting and debounce
+- Request queueing (sequential/parallel) with concurrency and priority
+- Request batching with payload combine and per-item response selection
+- Retry with backoff and customizable fallback
+- Timeout handling
+- Logging and optional server-side log shipping
 
-این سرویس برای سناریوهای کلاینتی با تعداد زیاد درخواست، بهینه‌سازی شبکه و مدیریت بار را تسهیل می‌کند.
+Designed for high-traffic client apps to optimize network usage and control load.
 
-## نصب و استفاده
+## Installation and Basic Usage
 
-سرویس به‌صورت `providedIn: 'root'` ثبت شده و تنها کافیست آن را تزریق کنید:
+Install the package and inject the service anywhere in your app:
+
+```sh
+npm i @hasan-akbari/advanced-http-client
+```
 
 ```ts
 import { Component } from '@angular/core';
-import { AdvancedHttpClientService } from 'advanced-http-client';
+import { AdvancedHttpClientService } from '@hasan-akbari/advanced-http-client';
 
 @Component({
   selector: 'app-demo',
@@ -34,9 +39,9 @@ export class DemoComponent {
 }
 ```
 
-## شروع سریع
+## Quick Start
 
-- پارامترها و هِدرها:
+- Params and headers:
 ```ts
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
@@ -48,56 +53,56 @@ http.send<any>('https://jsonplaceholder.typicode.com/posts', undefined, {
 }).subscribe();
 ```
 
-- جلوگیری از تکرار هم‌زمان (inflight dedup) و اشتراک نتیجه:
+- Inflight de-dup and result sharing:
 ```ts
-// دو مشترک، یک درخواست؛ نتیجه shareReplay می‌شود
+// two subscribers, one outbound request; result is shared via shareReplay
 http.get<any>('https://jsonplaceholder.typicode.com/posts/1').subscribe();
 http.get<any>('https://jsonplaceholder.typicode.com/posts/1').subscribe();
 ```
 
-- حالت خام برای عبور از dedup/shareReplay:
+- Raw mode to bypass dedup/shareReplay:
 ```ts
 http.get<any>('https://jsonplaceholder.typicode.com/posts/1', {}, { raw: true }).subscribe();
 http.get<any>('https://jsonplaceholder.typicode.com/posts/1', {}, { raw: true }).subscribe();
-// در این حالت ۲ درخواست مستقل ارسال می‌شود
+// two independent outbound requests will be sent
 ```
 
-## ویژگی‌ها و مثال‌ها
+## Features and Examples
 
-### کش حافظه‌ای
-- ذخیره پاسخ و سرویس‌دهی از کش تا پایان مدت انقضا:
+### Cache
+Store successful responses in memory and serve from cache until expiration:
 ```ts
 http.get('https://jsonplaceholder.typicode.com/posts/2', {}, { cacheDurationMs: 30000 }).subscribe();
 ```
 
-### Debounce و Rate Limit
-- Debounce برای ادغام فراخوانی‌های سریع؛ Rate Limit برای فاصله‌گذاری بین ارسال‌ها:
+### Debounce and Rate Limit
+Debounce merges rapid calls; Rate Limit enforces minimum spacing between sends:
 ```ts
-// تنها یک درخواست پس از 300ms
+// only one request after 300ms
 http.get('https://api.example.com/search', { q: 'ng' }, { debounceMs: 300 }).subscribe();
 
-// درخواست دوم با فاصله حداقل 1000ms نسبت به تکمیل قبلی برنامه‌ریزی می‌شود
+// second request is scheduled with at least 1000ms gap from the previous completion
 http.get('https://api.example.com/items', {}, { rateLimitMs: 1000 }).subscribe();
 ```
-نکته فنی: معیار Rate Limit بر اساس «زمان آخرین تکمیل» محاسبه می‌شود؛ بدین معنی که فراخوانی‌های بعدی پس از finalize درخواست قبلی زمان‌بندی می‌گردند.
+Tech note: Rate Limit is computed against the "last completion time" (finalize). Subsequent calls are scheduled after the previous request fully completes.
 
-### صف‌بندی (Queue)
-- Sequential: اجرای تک‌به‌تک
+### Queue
+- Sequential: one-by-one execution
 ```ts
 http.get('https://api.example.com/todos/1', {}, { queue: { enabled: true, mode: 'sequential', priority: 'normal' } }).subscribe();
 http.get('https://api.example.com/todos/2', {}, { queue: { enabled: true, mode: 'sequential', priority: 'normal' } }).subscribe();
 ```
 
-- Parallel با `concurrency`
+- Parallel with `concurrency`
 ```ts
 http.get('https://api.example.com/comments', {}, { raw: true, queue: { enabled: true, mode: 'parallel', concurrency: 2, priority: 'high' } }).subscribe();
 http.get('https://api.example.com/comments', {}, { raw: true, queue: { enabled: true, mode: 'parallel', concurrency: 2, priority: 'high' } }).subscribe();
 http.get('https://api.example.com/comments', {}, { raw: true, queue: { enabled: true, mode: 'parallel', concurrency: 2, priority: 'high' } }).subscribe();
 ```
-نکته: برای مشاهده دقیق کنترل هم‌زمانی، در تست/مثال از `raw:true` استفاده کنید تا dedup مانع ارسال‌های همسان نشود.
+Note: Use `raw: true` in examples/tests to observe concurrency precisely; dedup otherwise may merge identical requests.
 
-### بچینگ (Batch)
-- ترکیب payloadها و توزیع پاسخ‌ها با `combine` و `selector`:
+### Batch
+Combine payloads and distribute responses using `combine` and `selector`:
 ```ts
 const batchOpts = {
   method: 'GET',
@@ -115,20 +120,20 @@ const r1$ = http.send<any>('https://jsonplaceholder.typicode.com/users', { id: 1
 const r2$ = http.send<any>('https://jsonplaceholder.typicode.com/users', { id: 2 }, batchOpts as any);
 const r3$ = http.send<any>('https://jsonplaceholder.typicode.com/users', { id: 3 }, batchOpts as any);
 
-// سرویس برای روش‌های GET/HEAD/OPTIONS شناسه‌ها را به‌صورت query با کلید "id" ترکیب می‌کند
-// مثال: .../users?id=1&id=2&id=3
+// For GET/HEAD/OPTIONS, IDs are merged into query using key "id"
+// Example: .../users?id=1&id=2&id=3
 r1$.subscribe(console.log);
 r2$.subscribe(console.log);
 r3$.subscribe(console.log);
 ```
 
-### Retry و Fallback
-- تلاش مجدد با backoff و fallback مقدار یا فانکشن:
+### Retry and Fallback
+Retry with backoff and a fallback value or function:
 ```ts
 http.get('https://jsonplaceholder.typicode.com/posts', {}, {
   retry: {
-    attempts: 2,               // دو retry پس از درخواست اولیه
-    backoff: 'exponential',    // یا 'linear'
+    attempts: 2,               // two retries in addition to the initial request
+    backoff: 'exponential',    // or 'linear'
     baseDelayMs: 50,
     maxDelayMs: 2000,
     shouldRetry: (err) => err.status >= 500,
@@ -136,7 +141,7 @@ http.get('https://jsonplaceholder.typicode.com/posts', {}, {
   }
 }).subscribe(v => console.log('Result:', v));
 ```
-نکته: با `attempts=2`، چرخه شامل درخواست اولیه + ۲ تلاش مجدد است؛ در صورت تداوم خطا، مقدار `fallbackValue` از مسیر `catchError` منتشر می‌شود.
+Note: With `attempts = 2`, the cycle is initial request + 2 retries. If errors persist, `fallbackValue` is emitted from `catchError`.
 
 ### Timeout
 ```ts
@@ -144,8 +149,8 @@ http.get('https://jsonplaceholder.typicode.com/posts', {}, { timeoutMs: 10 })
   .subscribe({ error: e => console.error('Timeout:', e) });
 ```
 
-### لاگینگ
-- ارسال لاگ‌های موفق/ناموفق و سطح‌بندی:
+### Logging
+Send success/failure logs with levels and optional server shipping:
 ```ts
 http.get('https://jsonplaceholder.typicode.com/posts', {}, {
   log: {
@@ -153,41 +158,41 @@ http.get('https://jsonplaceholder.typicode.com/posts', {}, {
     level: 'basic', // 'none' | 'basic' | 'verbose'
     sendToServer: (entry) => fetch('/log', { method: 'POST', body: JSON.stringify(entry) })
   },
-  debug: true // چاپ در کنسول
+  debug: true // also print to console
 }).subscribe();
 ```
 
-## API Reference (خلاصه گزینه‌ها)
+## API Reference (options summary)
 
-- `method`: یکی از `GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS`
-- `params`: شیء ساده برای پارامترها (به `HttpParams` تبدیل می‌شود)
-- `headers`: شیء ساده برای هدرها (به `HttpHeaders` تبدیل می‌شود)
-- `body`: بدنه برای روش‌های غیر GET/HEAD/OPTIONS
-- `raw`: عبور از dedup و shareReplay؛ هر فراخوانی یک درخواست مستقل
-- `cacheDurationMs`: مدت اعتبار کش؛ پاسخ موفق در حافظه ذخیره می‌شود
-- `debounceMs`: تأخیر برای ادغام فراخوانی‌های سریع
-- `rateLimitMs`: حداقل فاصله بین تکمیل درخواست‌ها روی همان کلید
+- `method`: one of `GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS`
+- `params`: plain object for query params (converted to `HttpParams`)
+- `headers`: plain object for headers (converted to `HttpHeaders`)
+- `body`: payload for non-GET/HEAD/OPTIONS methods
+- `raw`: bypass dedup/shareReplay; every call sends an independent request
+- `cacheDurationMs`: cache TTL for successful responses
+- `debounceMs`: delay to merge rapid calls
+- `rateLimitMs`: minimum gap between request completions on the same key
 - `queue`: `{ enabled, mode: 'sequential'|'parallel', concurrency?, priority: 'low'|'normal'|'high' }`
 - `batch`: `{ enabled, key, size, intervalMs, combine(arr), selector(resp, payload) }`
 - `retry`: `{ attempts, backoff: 'exponential'|'linear', baseDelayMs, maxDelayMs?, shouldRetry?, fallbackValue }`
-- `timeoutMs`: زمان‌سنج بر حسب میلی‌ثانیه
+- `timeoutMs`: timeout in milliseconds
 - `log`: `{ enabled, level, sendToServer? }`
-- `debug`: فعال‌سازی لاگ کنسول در کنار `log`
+- `debug`: enable console debug beside `log`
 
-## نکات فنی و بهترین‌عمل‌ها
+## Technical Notes & Best Practices
 
-- Dedup بر اساس کلید ترکیبی `method + endpoint + params/body` انجام می‌شود و با `shareReplay` نتیجه را با مشترکین به اشتراک می‌گذارد.
-- `raw:true` تمام بهینه‌سازی‌های اشتراک/هم‌زمانی را دور می‌زند؛ برای سناریوهای خاص و تست‌ها استفاده کنید.
-- در حالت GET/HEAD/OPTIONS با بچینگ، کلید `id` برای ترکیب query استفاده می‌شود؛ اگر نیاز به کلید دیگری دارید، `combine` و مسیر ساخت endpoint را سفارشی کنید.
-- هنگامی‌که هر دو `debounceMs` و `rateLimitMs` تنظیم شده‌اند، تأخیر واقعی برابر با بزرگ‌ترین مقدار لازم است.
-- کش حافظه‌ای درون‌فرآیند است و پایداری بلندمدت ندارد؛ برای پایداری خارج از حافظه، لایه‌ی ذخیره‌سازی جداگانه در نظر بگیرید.
+- Dedup builds a composite key from `method + endpoint + params/body` and shares the result via `shareReplay`.
+- `raw: true` bypasses sharing/concurrency optimizations; use for specific scenarios or tests.
+- For GET/HEAD/OPTIONS batching, the `id` key is used in the query. If you need another key, customize `combine` and endpoint construction.
+- When both `debounceMs` and `rateLimitMs` are set, the effective delay is the largest necessary value.
+- In-memory cache is process-local and not durable; use a separate storage layer if you need persistence.
 
-## تست، بیلد و انتشار
+## Testing, Build and Publish
 
-- اجرای تست‌ها: `npx ng test advanced-http-client --watch=false --browsers=ChromeHeadless`
-- بیلد: `npx ng build advanced-http-client`
-- انتشار: پس از بیلد به مسیر `dist/advanced-http-client` بروید و `npm publish` اجرا کنید.
+- Run unit tests: `npx ng test advanced-http-client --watch=false --browsers=ChromeHeadless`
+- Build the library: `npx ng build advanced-http-client`
+- Publish: after build, `cd dist/advanced-http-client` and run `npm publish`
 
-## لایسنس
+## License
 
-این پروژه صرفاً نمونه‌ای برای نمایش الگوی کلاینت HTTP پیشرفته در Angular است. برای استفاده در محیط تولید، مطابق نیاز خود آن را سفارشی و ارزیابی کنید.
+This project showcases an advanced HTTP client pattern for Angular. Evaluate and adapt it to your production needs before use.
