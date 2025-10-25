@@ -1,6 +1,6 @@
 {
   "name": "@hasan-akbari/advanced-http-client",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Advanced Angular HttpClient with cache, inflight dedup, rate limit, debounce, queueing, batching, retry/backoff, timeout, logging.",
   "keywords": [
     "angular",
@@ -16,10 +16,10 @@
     "logging"
   ],
   "author": "Hasan Akbari",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Hasan-Akbari/angular-advanced-http-client"
+    "url": "git+https://github.com/Hasan-Akbari/angular-advanced-http-client.git"
   },
   "bugs": {
     "url": "https://github.com/Hasan-Akbari/angular-advanced-http-client/issues"
