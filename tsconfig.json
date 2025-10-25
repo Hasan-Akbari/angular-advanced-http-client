@@ -2,6 +2,12 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "paths": {
+      "advanced-http-client": [
+        "./projects/advanced-http-client/src/public-api.ts",
+        "./dist/advanced-http-client"
+      ]
+    },
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,

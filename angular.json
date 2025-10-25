@@ -90,6 +90,42 @@
           }
         }
       }
+    },
+    "advanced-http-client": {
+      "projectType": "library",
+      "root": "projects/advanced-http-client",
+      "sourceRoot": "projects/advanced-http-client/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/advanced-http-client/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/advanced-http-client/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/advanced-http-client/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "tsConfig": "projects/advanced-http-client/tsconfig.spec.json",
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ]
+          }
+        }
+      }
     }
+  },
+  "cli": {
+    "analytics": false
   }
 }
