@@ -37,12 +37,12 @@ jobs:
 
       - name: SPA fallback (copy index.html to 404.html)
         run: |
-          cp -f dist/http-client/index.html dist/http-client/404.html
+          cp -f dist/http-client/browser/index.html dist/http-client/browser/404.html
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/http-client
+          path: dist/http-client/browser
 
   deploy:
     environment:
