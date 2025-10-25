@@ -3,5 +3,8 @@
   "dest": "../../dist/advanced-http-client",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "assets": [
+    "advanced-http-client.png"
+  ]
 }

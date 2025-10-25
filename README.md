@@ -1,5 +1,7 @@
 # AdvancedHttpClient
 
+![Features of AdvancedHttpClientService](projects/advanced-http-client/advanced-http-client.png)
+
 AdvancedHttpClient is a feature-rich HTTP service for Angular that augments the standard HttpClient with production-grade capabilities:
 
 - In-memory cache with expiration
