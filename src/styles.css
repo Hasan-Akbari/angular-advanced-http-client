@@ -1,1 +1,66 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global theme and typography */
+* { box-sizing: border-box }
+html, body { height: 100% }
+body {
+  margin: 0;
+  font-family: 'Vazirmatn', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Noto Naskh Arabic', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #e5e7eb; /* gray-200 */
+  background:
+    radial-gradient(1200px circle at 20% -10%, rgba(30,58,138,0.25) 0%, transparent 50%),
+    radial-gradient(800px circle at 80% 10%, rgba(6,182,212,0.25) 0%, transparent 50%),
+    linear-gradient(160deg, #0f172a 0%, #1e293b 100%);
+}
+
+:root {
+  --glass-bg: rgba(255,255,255,0.08);
+  --glass-border: rgba(255,255,255,0.18);
+  --text-primary: #e5e7eb;
+  --text-secondary: #94a3b8;
+  --accent: #7c3aed; /* violet-600 */
+  --accent-2: #06b6d4; /* cyan-500 */
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 24px 56px;
+}
+
+.page-header {
+  display: grid;
+  gap: 12px;
+  align-items: center;
+  justify-items: center;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  backdrop-filter: blur(10px) saturate(110%);
+}
+
+.page-header h1 {
+  font-size: 32px;
+  line-height: 1.2;
+  margin: 0;
+  letter-spacing: -0.3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.page-header p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Link styling */
+a { color: var(--accent-2); text-decoration: none }
+a:hover { text-decoration: underline }
+
+/* Ensure demo section spacing is balanced */
+app-http-demo { display: block; margin-top: 8px; }

@@ -1,0 +1,15 @@
+.page {
+  display: block;
+}
+
+.page-header {
+  text-align: center;
+}
+
+.page-header h1 {
+  font-weight: 700;
+}
+
+.page-header p {
+  font-weight: 500;
+}
