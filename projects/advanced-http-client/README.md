@@ -1,6 +1,6 @@
 # AdvancedHttpClient
 
-![Features of AdvancedHttpClientService](https://unpkg.com/@hasan-akbari/advanced-http-client@latest/advanced-http-client.png)
+![Features of AdvancedHttpClientService](https://unpkg.com/@hasan-akbari/advanced-http-client@latest/advanced-http-client.webp)
 
 AdvancedHttpClient is a feature-rich HTTP service for Angular that augments the standard HttpClient with production-grade capabilities:
 
