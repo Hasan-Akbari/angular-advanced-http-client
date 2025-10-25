@@ -4,6 +4,10 @@
 
 ![AdvancedHttpClient Banner](projects/advanced-http-client/advanced-http-client.webp)
 
+## Demo
+
+- Live: https://hasan-akbari.github.io/angular-advanced-http-client/
+
 
 Production‑grade Angular HTTP client that augments `HttpClient` with caching, inflight de‑duplication, rate limiting, debouncing, queueing/concurrency, batching, retry/backoff, timeout, and logging.
 

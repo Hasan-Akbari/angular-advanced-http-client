@@ -35,6 +35,13 @@ jobs:
           REPO_NAME="${{ github.event.repository.name }}"
           npm run build -- --configuration production --base-href "/$REPO_NAME/" --deploy-url "/$REPO_NAME/"
 
+      - name: Diagnose dist outputs
+        run: |
+          echo "=== dist/http-client ==="
+          ls -R dist/http-client || true
+          echo "=== dist/http-client/browser ==="
+          ls -R dist/http-client/browser || true
+
       - name: SPA fallback (copy index.html to 404.html)
         id: spa
         run: |
